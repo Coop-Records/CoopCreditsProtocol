@@ -1,0 +1,13 @@
+{
+  "name": "coop-credits-protocol",
+  "version": "1.0.0",
+  "description": "COOP Credits Protocol",
+  "scripts": {
+    "prepare": "husky install",
+    "format": "forge fmt",
+    "lint": "forge fmt --check"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3"
+  }
+} 

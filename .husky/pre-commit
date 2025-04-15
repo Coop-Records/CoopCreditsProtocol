@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run forge fmt to format Solidity files
+echo "Running forge fmt..."
+forge fmt
+
+# Add the formatted files back to staging
+git add . 
