@@ -2,12 +2,14 @@
   "name": "coop-credits-protocol",
   "version": "1.0.0",
   "description": "COOP Credits Protocol",
+  "type": "module",
   "scripts": {
     "prepare": "husky install",
     "format": "forge fmt",
-    "lint": "forge fmt --check"
+    "lint": "forge fmt --check",
+    "deploy-credits": "source .env && forge clean && forge script script/Deploy.s.sol:DeployCredits --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --etherscan-api-key $BASESCAN_API_KEY -vvvv"
   },
   "devDependencies": {
     "husky": "^8.0.3"
   }
-} 
+}
