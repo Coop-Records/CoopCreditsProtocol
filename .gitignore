@@ -18,3 +18,5 @@ node_modules/
 
 # AI generated files
 ROADMAP.md
+.cursor/*
+scratchpad.md
