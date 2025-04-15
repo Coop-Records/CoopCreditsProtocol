@@ -16,15 +16,12 @@ interface IMultiTokenDropMarket {
         uint256 protocolFeePerQuantity;
     }
 
-    function getSaleTermsForToken(
-        address nftContract,
-        uint256 tokenId
-    ) external view returns (uint256 saleTermsId);
+    function getSaleTermsForToken(address nftContract, uint256 tokenId) external view returns (uint256 saleTermsId);
 
-    function getFixedPriceSale(
-        uint256 saleTermsId,
-        address payable referrer
-    ) external view returns (GetFixedPriceSaleResults memory results);
+    function getFixedPriceSale(uint256 saleTermsId, address payable referrer)
+        external
+        view
+        returns (GetFixedPriceSaleResults memory results);
 
     function mintFromFixedPriceSale(
         uint256 saleTermsId,

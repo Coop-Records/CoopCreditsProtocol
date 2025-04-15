@@ -5,9 +5,11 @@ pragma solidity ^0.8.18;
 // solhint-disable max-line-length
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
-import {ERC1155BurnableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
+import {ERC1155BurnableUpgradeable} from
+    "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
 import {ERC1155Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
-import {ERC1155SupplyUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
+import {ERC1155SupplyUpgradeable} from
+    "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {Ownable2StepUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
 // solhint-enable max-line-length
@@ -48,9 +50,7 @@ contract Spurs1155 is
      * @notice Invalid sales term ID
      * @dev The provided sales term ID does not correspond to an active sale.
      */
-    error Spurs1155_MultiTokenDropMarket_Invalid_Sales_Term_Id(
-        uint256 saleTermsId
-    );
+    error Spurs1155_MultiTokenDropMarket_Invalid_Sales_Term_Id(uint256 saleTermsId);
 
     /**
      * @notice Must buy 1
@@ -68,19 +68,13 @@ contract Spurs1155 is
      * @notice Insufficient Spurs balance
      * @dev The account does not have enough Spurs for this action.
      */
-    error Spurs1155_Insufficient_Spurs_Balance(
-        uint256 required,
-        uint256 available
-    );
+    error Spurs1155_Insufficient_Spurs_Balance(uint256 required, uint256 available);
 
     /**
      * @notice Insufficient ETH in contract
      * @dev The contract does not have enough ETH to complete this action.
      */
-    error Spurs1155_Insufficient_ETH_In_Contract(
-        uint256 required,
-        uint256 available
-    );
+    error Spurs1155_Insufficient_ETH_In_Contract(uint256 required, uint256 available);
 
     /**
      * @notice Cannot withdraw to 0x0
@@ -94,11 +88,7 @@ contract Spurs1155 is
      * @param recipient The address of the recipient of the ETH
      * @param amount The amount of ETH being withdrawn
      */
-    event AdminWithdrawal(
-        address indexed admin,
-        address indexed recipient,
-        uint256 amount
-    );
+    event AdminWithdrawal(address indexed admin, address indexed recipient, uint256 amount);
 
     /**
      * @notice Emitted when a buyer successfully mints tokens from a fixed price sale using Spurs.
@@ -123,10 +113,7 @@ contract Spurs1155 is
         _disableInitializers();
     }
 
-    function initialize(
-        string memory tokenUri,
-        address payable _multiTokenDropMarket
-    ) public initializer {
+    function initialize(string memory tokenUri, address payable _multiTokenDropMarket) public initializer {
         if (_multiTokenDropMarket.code.length == 0) {
             revert Spurs1155_MultiTokenDropMarket_Address_Is_Not_A_Contract();
         }
@@ -188,69 +175,43 @@ contract Spurs1155 is
      * @param tokenRecipient The address where tokens should be minted to.
      * @param referrer The address of the referrer for this mint.
      */
-    function mintWithSpurs(
-        uint256 saleTermsId,
-        uint256 tokenQuantity,
-        address tokenRecipient,
-        address payable referrer
-    ) external {
+    function mintWithSpurs(uint256 saleTermsId, uint256 tokenQuantity, address tokenRecipient, address payable referrer)
+        external
+    {
         if (tokenQuantity < 1) {
             revert Spurs1155_Must_Buy_At_Least_One_Token();
         }
-        IMultiTokenDropMarket.GetFixedPriceSaleResults
-            memory fixedPriceSale = multiTokenDropMarket.getFixedPriceSale(
-                saleTermsId,
-                referrer
-            );
+        IMultiTokenDropMarket.GetFixedPriceSaleResults memory fixedPriceSale =
+            multiTokenDropMarket.getFixedPriceSale(saleTermsId, referrer);
 
         // Check if sales terms exist
         if (fixedPriceSale.multiTokenContract == address(0)) {
-            revert Spurs1155_MultiTokenDropMarket_Invalid_Sales_Term_Id(
-                saleTermsId
-            );
+            revert Spurs1155_MultiTokenDropMarket_Invalid_Sales_Term_Id(saleTermsId);
         }
 
         // Burn balance and mint with unlocked ETH
-        uint256 spursCost = getSpursCostForMint(
-            fixedPriceSale.pricePerQuantity,
-            tokenQuantity
-        );
+        uint256 spursCost = getSpursCostForMint(fixedPriceSale.pricePerQuantity, tokenQuantity);
         uint256 userSpursBalance = balanceOf(msg.sender, SPURS_TOKEN_ID);
 
         if (spursCost > userSpursBalance) {
-            revert Spurs1155_Insufficient_Spurs_Balance(
-                spursCost,
-                userSpursBalance
-            );
+            revert Spurs1155_Insufficient_Spurs_Balance(spursCost, userSpursBalance);
         }
         _burn(msg.sender, SPURS_TOKEN_ID, spursCost);
 
         uint256 ethCost = getEthCostForSpurs(spursCost);
         multiTokenDropMarket.mintFromFixedPriceSale{value: ethCost}(
-            saleTermsId,
-            tokenQuantity,
-            tokenRecipient,
-            referrer
+            saleTermsId, tokenQuantity, tokenRecipient, referrer
         );
 
         // Emit information multiTokenDropMarket wouldn't have
-        emit MintWithSpursFromFixedPriceSale(
-            saleTermsId,
-            tokenRecipient,
-            referrer,
-            tokenQuantity,
-            spursCost,
-            ethCost
-        );
+        emit MintWithSpursFromFixedPriceSale(saleTermsId, tokenRecipient, referrer, tokenQuantity, spursCost, ethCost);
     }
 
     /**
      * @notice Allows admins to set the URI of the contract
      * @param newuri The new URI to set for the contract
      */
-    function adminSetURI(
-        string memory newuri
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function adminSetURI(string memory newuri) public onlyRole(DEFAULT_ADMIN_ROLE) {
         _setURI(newuri);
     }
 
@@ -258,9 +219,7 @@ contract Spurs1155 is
      * @notice Allows admins to update the MultiTokenDropMarket contract address
      * @param newMarket The address of the new MultiTokenDropMarket contract
      */
-    function adminSetMultiTokenDropMarket(
-        address newMarket
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function adminSetMultiTokenDropMarket(address newMarket) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (newMarket.code.length == 0) {
             revert Spurs1155_MultiTokenDropMarket_Address_Is_Not_A_Contract();
         }
@@ -274,19 +233,13 @@ contract Spurs1155 is
      * @param amount Amount of ETH to send to recipient.
      *
      */
-    function adminWithdraw(
-        address payable recipient,
-        uint256 amount
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function adminWithdraw(address payable recipient, uint256 amount) public onlyRole(DEFAULT_ADMIN_ROLE) {
         if (recipient == address(0)) {
             revert Spurs1155_Invalid_Withdraw_Address();
         }
         uint256 contractBalance = address(this).balance;
         if (amount > contractBalance) {
-            revert Spurs1155_Insufficient_ETH_In_Contract(
-                amount,
-                contractBalance
-            );
+            revert Spurs1155_Insufficient_ETH_In_Contract(amount, contractBalance);
         }
 
         recipient.sendValue(amount);
@@ -301,10 +254,11 @@ contract Spurs1155 is
      * @param tokenQuantity Amount of ETH to send to recipient.
      * @return spursCost The Spurs cost for minting
      */
-    function getSpursCostForMint(
-        uint256 pricePerQuantity,
-        uint256 tokenQuantity
-    ) public pure returns (uint256 spursCost) {
+    function getSpursCostForMint(uint256 pricePerQuantity, uint256 tokenQuantity)
+        public
+        pure
+        returns (uint256 spursCost)
+    {
         uint256 protocolFee = getEthCostForSpurs(tokenQuantity);
         uint256 creatorRevenue = 0;
 
@@ -314,9 +268,7 @@ contract Spurs1155 is
         } else {
             creatorRevenue = pricePerQuantity * tokenQuantity;
         }
-        spursCost =
-            (creatorRevenue + protocolFee) /
-            MULTI_TOKEN_MINT_FEE_IN_WEI;
+        spursCost = (creatorRevenue + protocolFee) / MULTI_TOKEN_MINT_FEE_IN_WEI;
     }
 
     /**
@@ -325,25 +277,19 @@ contract Spurs1155 is
      * @param quantity The number of Spurs to calculate cost for
      * @return ethCost The total ETH cost for the requested quantity of Spurs
      */
-    function getEthCostForSpurs(
-        uint256 quantity
-    ) public pure returns (uint256 ethCost) {
+    function getEthCostForSpurs(uint256 quantity) public pure returns (uint256 ethCost) {
         ethCost = MULTI_TOKEN_MINT_FEE_IN_WEI * quantity;
     }
 
     /// @inheritdoc ERC1155Upgradeable
-    function _update(
-        address from,
-        address to,
-        uint256[] memory tokenIds,
-        uint256[] memory quantities
-    ) internal override(ERC1155Upgradeable, ERC1155SupplyUpgradeable) {
+    function _update(address from, address to, uint256[] memory tokenIds, uint256[] memory quantities)
+        internal
+        override(ERC1155Upgradeable, ERC1155SupplyUpgradeable)
+    {
         super._update(from, to, tokenIds, quantities);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    )
+    function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
