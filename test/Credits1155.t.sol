@@ -32,18 +32,12 @@ contract Credits1155Test is Test {
         proxyAdmin = new ProxyAdmin(owner);
 
         // Encode initialization data
-        bytes memory initData = abi.encodeWithSelector(
-            Credits1155.initialize.selector,
-            "ipfs://test",
-            payable(dummyMarket)
-        );
+        bytes memory initData =
+            abi.encodeWithSelector(Credits1155.initialize.selector, "ipfs://test", payable(dummyMarket));
 
         // Deploy and initialize proxy
-        TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
-            address(implementation),
-            address(proxyAdmin),
-            initData
-        );
+        TransparentUpgradeableProxy proxy =
+            new TransparentUpgradeableProxy(address(implementation), address(proxyAdmin), initData);
 
         // Setup proxy interface
         credits = Credits1155(payable(address(proxy)));
