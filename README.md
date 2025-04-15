@@ -1,7 +1,7 @@
 # COOP Credits Protocol
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Build Status](https://github.com/voicefirstai/CoopCreditsProtocol/actions/workflows/test.yml/badge.svg)](https://github.com/voicefirstai/CoopCreditsProtocol/actions)
+[![Build Status](https://github.com/voicefirstai/CoopCreditsProtocol/workflows/test/badge.svg)](https://github.com/voicefirstai/CoopCreditsProtocol/actions/workflows/test.yml)
 [![Foundry](https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg)](https://getfoundry.sh/)
 
 ## Overview
