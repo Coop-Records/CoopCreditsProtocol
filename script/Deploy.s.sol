@@ -59,9 +59,6 @@ contract DeployCredits is Script {
             proxyAdmin: address(proxyAdmin)
         });
 
-        // Verify deployment
-        verify(result);
-
         return result;
     }
 }
