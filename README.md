@@ -6,7 +6,7 @@
 
 ## Overview
 
-The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token system designed for cooperative credit management. It enables the creation, distribution, and redemption of credit tokens within cooperative ecosystems.
+The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token system designed for cooperative credit management. It enables the creation, distribution, and redemption of credit tokens within the Coop Records ecosystem.
 
 ## Official Deployments
 
