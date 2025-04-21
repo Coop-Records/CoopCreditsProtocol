@@ -7,3 +7,6 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "lib/coop-records-collectible-protocol"]
+	path = lib/coop-records-collectible-protocol
+	url = https://github.com/Coop-Records/coop-records-collectible-protocol
