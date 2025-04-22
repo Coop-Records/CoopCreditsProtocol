@@ -263,16 +263,6 @@ contract Credits1155 is
     }
 
     /**
-     * @notice ETH cost of minting from CoopCollectibles
-     * @dev Calculates credit cost based on token price and protocol fee
-     * @param tokenQuantity Amount of tokens to mint
-     * @return creditsCost The Credits cost for minting
-     */
-    function getCreditsCostForMint(uint256 tokenQuantity) public pure returns (uint256 creditsCost) {
-        creditsCost = MINT_FEE_IN_WEI * tokenQuantity;
-    }
-
-    /**
      * @notice Calculate the total ETH cost for a given quantity of Credits
      * @dev Multiplies the constant fee by the requested quantity
      * @param quantity The number of Credits to calculate cost for
