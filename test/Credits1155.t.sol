@@ -47,7 +47,7 @@ contract Credits1155Test is Test {
 
     function test_Constants() public view {
         assertEq(credits.CREDITS_TOKEN_ID(), 1);
-        assertEq(credits.MINT_FEE_IN_WEI(), 0.0001 ether);
+        assertEq(credits.MINT_FEE_IN_WEI(), 0.0004 ether);
     }
 
     function test_BuyCredits() public {
