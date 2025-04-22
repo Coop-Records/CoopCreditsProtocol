@@ -26,7 +26,6 @@ contract Credits1155CoopIntegrationTest is Test {
 
     uint256 public constant TOKEN_ID = 123;
     uint256 public constant SALE_TERMS_ID = 456;
-    uint256 public constant PRICE_PER_TOKEN = 0.0004 ether;
 
     // Event definition for testing
     event MintWithCreditsFromFixedPriceSale(
@@ -43,27 +42,6 @@ contract Credits1155CoopIntegrationTest is Test {
         user = makeAddr("user");
         vm.deal(user, 100 ether);
         vm.deal(owner, 100 ether);
-
-        // 1. First deploy our mock implementations
-        coopCollectibles = new MockCoopCreator1155();
-        saleStrategy = new MockFixedPriceSaleStrategy(PRICE_PER_TOKEN);
-
-        // 2. Set up the token and sale in the mock implementations
-        coopCollectibles.setupNewToken(TOKEN_ID, "ipfs://test/token", 1000); // Max supply 1000
-
-        // Set up a valid sale for TOKEN_ID
-        MockFixedPriceSaleStrategy.SalesConfig memory config = MockFixedPriceSaleStrategy.SalesConfig({
-            saleStart: uint64(0), // Started 1000 seconds ago
-            saleEnd: uint64(block.timestamp + 1000), // Ends 1000 seconds from now
-            maxTokensPerAddress: 0, // No limit per address
-            pricePerToken: uint96(PRICE_PER_TOKEN), // Price per token
-            fundsRecipient: payable(owner), // Funds go to owner
-            exists: true // Sale exists
-        });
-        saleStrategy.setSale(address(coopCollectibles), TOKEN_ID, config);
-
-        // Set up an inactive sale for testing
-        saleStrategy.setInactiveSale(address(coopCollectibles), 789);
 
         // 3. Deploy the Credits1155 contract
         vm.startPrank(owner);
@@ -87,6 +65,27 @@ contract Credits1155CoopIntegrationTest is Test {
 
         // Setup proxy interface
         credits = Credits1155(payable(address(proxy)));
+
+        // 1. First deploy our mock implementations
+        coopCollectibles = new MockCoopCreator1155();
+        saleStrategy = new MockFixedPriceSaleStrategy(credits.MINT_FEE_IN_WEI());
+
+        // 2. Set up the token and sale in the mock implementations
+        coopCollectibles.setupNewToken(TOKEN_ID, "ipfs://test/token", 1000); // Max supply 1000
+
+        // Set up a valid sale for TOKEN_ID
+        MockFixedPriceSaleStrategy.SalesConfig memory config = MockFixedPriceSaleStrategy.SalesConfig({
+            saleStart: uint64(0), // Started 1000 seconds ago
+            saleEnd: uint64(block.timestamp + 1000), // Ends 1000 seconds from now
+            maxTokensPerAddress: 0, // No limit per address
+            pricePerToken: uint96(credits.MINT_FEE_IN_WEI()), // Price per token
+            fundsRecipient: payable(owner), // Funds go to owner
+            exists: true // Sale exists
+        });
+        saleStrategy.setSale(address(coopCollectibles), TOKEN_ID, config);
+
+        // Set up an inactive sale for testing
+        saleStrategy.setInactiveSale(address(coopCollectibles), 789);
 
         // Set the fixed price sale strategy in the Credits1155 contract
         credits.setFixedPriceSaleStrategy(address(saleStrategy));

@@ -33,8 +33,8 @@ contract Credits1155 is
      */
     uint256 public constant CREDITS_TOKEN_ID = 1;
 
-    /// @dev A new discounted fixed fee charged for each MultiToken minted.
-    uint256 public constant MULTI_TOKEN_MINT_FEE_IN_WEI = 0.0004 ether;
+    /// @dev fixed fee charged for each coop collectible minted.
+    uint256 public constant MINT_FEE_IN_WEI = 0.0004 ether;
 
     /**
      * @notice CoopCollectibles contract for minting tokens using credits.
@@ -269,7 +269,7 @@ contract Credits1155 is
      * @return creditsCost The Credits cost for minting
      */
     function getCreditsCostForMint(uint256 tokenQuantity) public pure returns (uint256 creditsCost) {
-        creditsCost = MULTI_TOKEN_MINT_FEE_IN_WEI * tokenQuantity;
+        creditsCost = MINT_FEE_IN_WEI * tokenQuantity;
     }
 
     /**
@@ -279,7 +279,7 @@ contract Credits1155 is
      * @return ethCost The total ETH cost for the requested quantity of Credits
      */
     function getEthCostForCredits(uint256 quantity) public pure returns (uint256 ethCost) {
-        ethCost = MULTI_TOKEN_MINT_FEE_IN_WEI * quantity;
+        ethCost = MINT_FEE_IN_WEI * quantity;
     }
 
     /// @inheritdoc ERC1155Upgradeable
