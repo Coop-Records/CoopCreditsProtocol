@@ -163,16 +163,16 @@ contract Credits1155CoopIntegrationTest is Test {
         );
     }
 
-    // function test_MintWithCredits_RevertsForInactiveSale() public {
-    //     // Using our inactive sale ID (789)
-    //     uint256 inactiveSaleId = 789;
+    function test_MintWithCredits_RevertsForInactiveSale() public {
+        // Using our inactive sale ID (789)
+        uint256 inactiveSaleId = 789;
 
-    //     vm.prank(user);
+        vm.prank(user);
 
-    //     // This should still revert with a message about the sale not being active
-    //     vm.expectRevert(MockFixedPriceSaleStrategy.SaleNotActive.selector);
-    //     credits.mintWithCredits(inactiveSaleId, 1, user, payable(address(0)));
-    // }
+        // This should still revert with a message about the sale not being active
+        vm.expectRevert(abi.encodeWithSelector(Credits1155.Credits1155_Invalid_Token_Id.selector, inactiveSaleId));
+        credits.mintWithCredits(address(coopCollectibles), inactiveSaleId, 1, user, payable(address(0)));
+    }
 
     // function test_MintWithCredits_RevertsForInsufficientCredits() public {
     //     // Try to mint more tokens than the user has credits for
