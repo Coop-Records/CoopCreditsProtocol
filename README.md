@@ -13,9 +13,9 @@ The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token sy
 
 | Contract       | Address                                      | Transaction                                                                                                |
 | -------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Implementation | `0x5a56fB536050Ce2eAB8172DD5e1408eE14ADDDAE` | [View](https://sepolia.basescan.org/tx/0x7b5c278ebf9b4b6882ca610b115f40fefd4a4d91aa6f5f7ce240c5ef23bf7f80) |
-| Proxy Admin    | `0x6ECFBf13a69F82E278192D4F71C4E2bcAb3e239c` | [View](https://sepolia.basescan.org/tx/0xb051c7cb4ad25a4186efbb45a9f50645f80b3b2895102ee9c55837e1d552ecef) |
-| Proxy          | `0x3c6238852786d1c9bcb24e12b7e36b82d55ecd3f` | [View](https://sepolia.basescan.org/tx/0x138ba0dfc661a8db9675db264d2fe6c5839cf316242788eb44e59df02105bc13) |
+| Implementation | `0x976f2D1abeb7517D4e1D6748b48Db90F8aFd927F` | [View](https://sepolia.basescan.org/tx/0x0316f4ebd0a231d928fc880d7e624fed3d5280b9f6c16ac534908358a1e1357f) |
+| Proxy Admin    | `0x49444dec297893751f0475B010ea09DB4132E811` | [View](https://sepolia.basescan.org/tx/0x34901f3ac1817480970a4644b59cdea5bad320d39b5b29173695fd05538c24f9) |
+| Proxy          | `0xbbf57b8b9f2d63caf22430a366eea4b716fa17a3` | [View](https://sepolia.basescan.org/tx/0xe72a0877f910a08e3c6851d5ccb4791cbae4f77e7be148162656a7c5182ad005) |
 
 ### Key Features
 
@@ -89,3 +89,82 @@ cp .env.example .env
 ```bash
 forge build
 ```
+
+## Deployment
+
+To deploy the Credits Protocol to a network, you'll need to:
+
+1. Configure your deployment environment in `.env` file:
+
+```bash
+# Required environment variables
+RPC_URL=           # The RPC URL of the target network (e.g., https://sepolia.base.org)
+PRIVATE_KEY=       # Your wallet's private key for deployment
+TOKEN_URI=         # The URI for the token metadata (e.g., ipfs://...)
+BASESCAN_API_KEY=  # API key for contract verification
+```
+
+2. Run the deployment script:
+
+```bash
+# Using pnpm
+pnpm run deploy-credits
+
+# Or directly with Foundry
+forge clean && forge script script/Deploy.s.sol:DeployCredits --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --etherscan-api-key $BASESCAN_API_KEY -vvvv
+```
+
+3. After deployment, take note of the following addresses:
+
+   - Implementation contract address
+   - Proxy Admin address
+   - Proxy contract address (this is the main address you'll interact with)
+
+4. Update contract configuration (if needed):
+
+   - Set the fixed price sale strategy: `cast send <PROXY_ADDRESS> "setFixedPriceSaleStrategy(address)" <STRATEGY_ADDRESS> --rpc-url $RPC_URL --private-key $PRIVATE_KEY`
+
+5. Verify deployment by testing core functionality:
+   - Buy credits: `cast send <PROXY_ADDRESS> "buyCredits(address,uint256)" <RECIPIENT_ADDRESS> <AMOUNT> --value <ETH_AMOUNT> --rpc-url $RPC_URL --private-key $PRIVATE_KEY`
+
+## Testing
+
+Run the test suite to verify contract functionality:
+
+```bash
+# Run all tests
+forge test
+
+# Run tests with verbosity for more detailed output
+forge test -vvv
+
+# Run a specific test file
+forge test --match-path test/Credits1155.t.sol
+
+# Run a specific test function
+forge test --match-test test_BuyCredits
+```
+
+## Contract Upgrades
+
+Since the protocol uses the transparent proxy pattern, the implementation contract can be upgraded while preserving all state:
+
+1. Deploy a new implementation contract:
+
+```bash
+forge create src/Credits1155.sol:Credits1155 --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+```
+
+2. Upgrade the proxy to point to the new implementation using the ProxyAdmin:
+
+```bash
+# Get the ProxyAdmin contract interface
+cast call <PROXY_ADMIN_ADDRESS> "getProxyAdmin(address)" <PROXY_ADDRESS> --rpc-url $RPC_URL
+
+# Upgrade the proxy to the new implementation
+cast send <PROXY_ADMIN_ADDRESS> "upgrade(address,address)" <PROXY_ADDRESS> <NEW_IMPLEMENTATION_ADDRESS> --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
