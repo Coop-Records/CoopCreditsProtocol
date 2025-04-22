@@ -142,37 +142,26 @@ contract Credits1155CoopIntegrationTest is Test {
         );
     }
 
-    // function test_MintWithCredits_UsingSaleStrategy() public {
-    //     // This test checks if the contract properly uses the sale strategy for pricing
+    function test_MintWithCredits_UsingSaleStrategy() public {
+        // This test checks if the contract properly uses the sale strategy for pricing
 
-    //     uint256 tokenQuantity = 1;
+        uint256 tokenQuantity = 1;
 
-    //     // Get the initial balance of credits
-    //     uint256 initialCreditsBalance = credits.balanceOf(
-    //         user,
-    //         credits.CREDITS_TOKEN_ID()
-    //     );
+        // Get the initial balance of credits
+        uint256 initialCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
 
-    //     // Calculate the expected credits cost for a token with the mock sale strategy's price
-    //     uint256 expectedCreditsCost = 10; // This will depend on implementation
+        vm.prank(user);
 
-    //     vm.prank(user);
+        // Now we expect this to succeed and use the correct price from the sale strategy
+        credits.mintWithCredits(address(coopCollectibles), TOKEN_ID, tokenQuantity, user, payable(address(0)));
 
-    //     // Now we expect this to succeed and use the correct price from the sale strategy
-    //     credits.mintWithCredits(
-    //         TOKEN_ID,
-    //         tokenQuantity,
-    //         user,
-    //         payable(address(0))
-    //     );
-
-    //     // Verify credits were burned with the correct amount based on sale strategy price
-    //     assertEq(
-    //         credits.balanceOf(user, credits.CREDITS_TOKEN_ID()),
-    //         initialCreditsBalance - expectedCreditsCost,
-    //         "Credits were not burned correctly based on sale strategy price"
-    //     );
-    // }
+        // Verify credits were burned with the correct amount based on sale strategy price
+        assertEq(
+            credits.balanceOf(user, credits.CREDITS_TOKEN_ID()),
+            initialCreditsBalance - tokenQuantity,
+            "Credits were not burned correctly based on sale strategy price"
+        );
+    }
 
     // function test_MintWithCredits_RevertsForInactiveSale() public {
     //     // Using our inactive sale ID (789)
