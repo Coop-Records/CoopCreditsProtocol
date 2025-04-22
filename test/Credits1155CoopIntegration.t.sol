@@ -174,30 +174,22 @@ contract Credits1155CoopIntegrationTest is Test {
         credits.mintWithCredits(address(coopCollectibles), inactiveSaleId, 1, user, payable(address(0)));
     }
 
-    // function test_MintWithCredits_RevertsForInsufficientCredits() public {
-    //     // Try to mint more tokens than the user has credits for
-    //     uint256 tokenQuantity = 1000; // This should require more credits than the user has
+    function test_MintWithCredits_RevertsForInsufficientCredits() public {
+        // Try to mint more tokens than the user has credits for
+        uint256 tokenQuantity = 1000; // This should require more credits than the user has
 
-    //     // Calculate the expected credits cost for this quantity (will be more than user has)
-    //     uint256 expectedCreditsCost = 10000; // This will depend on implementation
+        vm.startPrank(user);
 
-    //     vm.prank(user);
-
-    //     // This should revert with an insufficient credits message
-    //     vm.expectRevert(
-    //         abi.encodeWithSelector(
-    //             Credits1155.Credits1155_Insufficient_Credits_Balance.selector,
-    //             expectedCreditsCost,
-    //             credits.balanceOf(user, credits.CREDITS_TOKEN_ID())
-    //         )
-    //     );
-    //     credits.mintWithCredits(
-    //         TOKEN_ID,
-    //         tokenQuantity,
-    //         user,
-    //         payable(address(0))
-    //     );
-    // }
+        // This should revert with an insufficient credits message
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Credits1155.Credits1155_Insufficient_Credits_Balance.selector,
+                tokenQuantity,
+                credits.balanceOf(user, credits.CREDITS_TOKEN_ID())
+            )
+        );
+        credits.mintWithCredits(address(coopCollectibles), TOKEN_ID, tokenQuantity, user, payable(address(0)));
+    }
 
     // function test_MintWithCredits_EmitsCorrectEvent() public {
     //     uint256 tokenQuantity = 1;
