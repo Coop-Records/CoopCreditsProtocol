@@ -43,7 +43,7 @@ contract Credits1155CoopIntegrationTest is Test {
         vm.deal(user, 100 ether);
         vm.deal(owner, 100 ether);
 
-        // 3. Deploy the Credits1155 contract
+        // Deploy the Credits1155 contract
         vm.startPrank(owner);
 
         implementation = new Credits1155();
@@ -66,16 +66,16 @@ contract Credits1155CoopIntegrationTest is Test {
         // Setup proxy interface
         credits = Credits1155(payable(address(proxy)));
 
-        // 1. First deploy our mock implementations
+        // Deploy our mock implementations
         coopCollectibles = new MockCoopCreator1155();
         saleStrategy = new MockFixedPriceSaleStrategy(credits.MINT_FEE_IN_WEI());
 
-        // 2. Set up the token and sale in the mock implementations
+        // Set up the token and sale in the mock implementations
         coopCollectibles.setupNewToken(TOKEN_ID, "ipfs://test/token", 1000); // Max supply 1000
 
         // Set up a valid sale for TOKEN_ID
         MockFixedPriceSaleStrategy.SalesConfig memory config = MockFixedPriceSaleStrategy.SalesConfig({
-            saleStart: uint64(0), // Started 1000 seconds ago
+            saleStart: uint64(0), // Started at 0
             saleEnd: uint64(block.timestamp + 1000), // Ends 1000 seconds from now
             maxTokensPerAddress: 0, // No limit per address
             pricePerToken: uint96(credits.MINT_FEE_IN_WEI()), // Price per token
@@ -144,7 +144,6 @@ contract Credits1155CoopIntegrationTest is Test {
 
     function test_MintWithCredits_UsingSaleStrategy() public {
         // This test checks if the contract properly uses the sale strategy for pricing
-
         uint256 tokenQuantity = 1;
 
         // Get the initial balance of credits
@@ -191,36 +190,24 @@ contract Credits1155CoopIntegrationTest is Test {
         credits.mintWithCredits(address(coopCollectibles), TOKEN_ID, tokenQuantity, user, payable(address(0)));
     }
 
-    // function test_MintWithCredits_EmitsCorrectEvent() public {
-    //     uint256 tokenQuantity = 1;
-    //     address tokenRecipient = user;
-    //     address payable referrer = payable(address(0));
+    function test_MintWithCredits_EmitsCorrectEvent() public {
+        uint256 tokenQuantity = 1;
+        address tokenRecipient = user;
+        address payable referrer = payable(address(0));
 
-    //     // Calculate expected costs
-    //     uint256 expectedCreditsCost = 10; // This will depend on implementation
-    //     uint256 expectedEthCost = credits.getEthCostForCredits(
-    //         expectedCreditsCost
-    //     );
+        // Calculate expected costs
+        uint256 expectedCreditsCost = tokenQuantity;
+        uint256 expectedEthCost = credits.getEthCostForCredits(expectedCreditsCost);
 
-    //     vm.prank(user);
+        vm.prank(user);
 
-    //     // We expect the contract to emit an event with these parameters
-    //     vm.expectEmit(true, true, true, false);
-    //     emit MintWithCreditsFromCoopCollectibles(
-    //         TOKEN_ID,
-    //         tokenRecipient,
-    //         referrer,
-    //         tokenQuantity,
-    //         expectedCreditsCost,
-    //         expectedEthCost
-    //     );
+        // We expect the contract to emit an event with these parameters
+        vm.expectEmit(true, true, true, false);
+        emit MintWithCreditsFromFixedPriceSale(
+            TOKEN_ID, tokenRecipient, referrer, tokenQuantity, expectedCreditsCost, expectedEthCost
+        );
 
-    //     // This should succeed and emit the event
-    //     credits.mintWithCredits(
-    //         TOKEN_ID,
-    //         tokenQuantity,
-    //         tokenRecipient,
-    //         referrer
-    //     );
-    // }
+        // This should succeed and emit the event
+        credits.mintWithCredits(address(coopCollectibles), TOKEN_ID, tokenQuantity, tokenRecipient, referrer);
+    }
 }
