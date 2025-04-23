@@ -37,11 +37,6 @@ contract Credits1155 is
     uint256 public constant MINT_FEE_IN_WEI = 0.0004 ether;
 
     /**
-     * @notice CoopCollectibles contract for minting tokens using credits.
-     */
-    ICoopCreator1155 public coopCollectibles;
-
-    /**
      * @notice Fixed price sale strategy contract
      */
     IMinter1155 public fixedPriceSaleStrategy;
@@ -202,7 +197,7 @@ contract Credits1155 is
         if (coopCollectiblesAddress.code.length == 0) {
             revert Credits1155_Contract_Address_Is_Not_A_Contract();
         }
-        coopCollectibles = ICoopCreator1155(coopCollectiblesAddress);
+        ICoopCreator1155 coopCollectibles = ICoopCreator1155(coopCollectiblesAddress);
         if (tokenQuantity < 1) {
             revert Credits1155_Must_Buy_At_Least_One_Token();
         }
