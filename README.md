@@ -102,6 +102,7 @@ RPC_URL=           # The RPC URL of the target network (e.g., https://sepolia.ba
 PRIVATE_KEY=       # Your wallet's private key for deployment
 TOKEN_URI=         # The URI for the token metadata (e.g., ipfs://...)
 BASESCAN_API_KEY=  # API key for contract verification
+FIXED_PRICE_SALE_STRATEGY= # (Optional) Address of the fixed price sale strategy contract
 ```
 
 2. Run the deployment script:
@@ -122,7 +123,7 @@ forge clean && forge script script/Deploy.s.sol:DeployCredits --rpc-url $RPC_URL
 
 4. Update contract configuration (if needed):
 
-   - Set the fixed price sale strategy: `cast send <PROXY_ADDRESS> "setFixedPriceSaleStrategy(address)" <STRATEGY_ADDRESS> --rpc-url $RPC_URL --private-key $PRIVATE_KEY`
+   - Set the fixed price sale strategy (only if not provided during initialization): `cast send <PROXY_ADDRESS> "setFixedPriceSaleStrategy(address)" <STRATEGY_ADDRESS> --rpc-url $RPC_URL --private-key $PRIVATE_KEY`
 
 5. Verify deployment by testing core functionality:
    - Buy credits: `cast send <PROXY_ADDRESS> "buyCredits(address,uint256)" <RECIPIENT_ADDRESS> <AMOUNT> --value <ETH_AMOUNT> --rpc-url $RPC_URL --private-key $PRIVATE_KEY`

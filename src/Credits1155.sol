@@ -119,18 +119,23 @@ contract Credits1155 is
         _disableInitializers();
     }
 
-    function initialize(string memory tokenUri) public initializer {
+    function initialize(string memory tokenUri, address _fixedPriceSaleStrategy) public initializer {
         __ERC1155_init(tokenUri); // creates first token
         __Ownable_init(msg.sender);
         __AccessControl_init();
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+
+        // Set the fixed price sale strategy if provided
+        if (_fixedPriceSaleStrategy != address(0)) {
+            setFixedPriceSaleStrategy(_fixedPriceSaleStrategy);
+        }
     }
 
     /**
      * @notice Set the fixed price sale strategy for CoopCollectibles
      * @param _fixedPriceSaleStrategy The address of the fixed price sale strategy
      */
-    function setFixedPriceSaleStrategy(address _fixedPriceSaleStrategy) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setFixedPriceSaleStrategy(address _fixedPriceSaleStrategy) public onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_fixedPriceSaleStrategy.code.length == 0) {
             revert Credits1155_Contract_Address_Is_Not_A_Contract();
         }
