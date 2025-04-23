@@ -178,5 +178,10 @@ contract Credits1155InitializerTest is Test {
 
         // Verify tokens were minted
         assertEq(coopCollectibles.balanceOf(user, TOKEN_ID), tokenQuantity, "Tokens were not minted correctly");
+
+        // Verify credits were deducted
+        uint256 finalCreditBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
+        console.log("User final credit balance:", finalCreditBalance);
+        assertEq(finalCreditBalance, creditsAmount - tokenQuantity, "Credits were not deducted correctly");
     }
 }
