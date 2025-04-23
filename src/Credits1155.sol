@@ -127,10 +127,7 @@ contract Credits1155 is
 
         // Set the fixed price sale strategy if provided
         if (_fixedPriceSaleStrategy != address(0)) {
-            if (_fixedPriceSaleStrategy.code.length == 0) {
-                revert Credits1155_Contract_Address_Is_Not_A_Contract();
-            }
-            fixedPriceSaleStrategy = IMinter1155(_fixedPriceSaleStrategy);
+            setFixedPriceSaleStrategy(_fixedPriceSaleStrategy);
         }
     }
 
@@ -138,7 +135,7 @@ contract Credits1155 is
      * @notice Set the fixed price sale strategy for CoopCollectibles
      * @param _fixedPriceSaleStrategy The address of the fixed price sale strategy
      */
-    function setFixedPriceSaleStrategy(address _fixedPriceSaleStrategy) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setFixedPriceSaleStrategy(address _fixedPriceSaleStrategy) public onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_fixedPriceSaleStrategy.code.length == 0) {
             revert Credits1155_Contract_Address_Is_Not_A_Contract();
         }
