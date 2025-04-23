@@ -119,11 +119,19 @@ contract Credits1155 is
         _disableInitializers();
     }
 
-    function initialize(string memory tokenUri) public initializer {
+    function initialize(string memory tokenUri, address _fixedPriceSaleStrategy) public initializer {
         __ERC1155_init(tokenUri); // creates first token
         __Ownable_init(msg.sender);
         __AccessControl_init();
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+
+        // Set the fixed price sale strategy if provided
+        if (_fixedPriceSaleStrategy != address(0)) {
+            if (_fixedPriceSaleStrategy.code.length == 0) {
+                revert Credits1155_Contract_Address_Is_Not_A_Contract();
+            }
+            fixedPriceSaleStrategy = IMinter1155(_fixedPriceSaleStrategy);
+        }
     }
 
     /**
