@@ -13,9 +13,11 @@ The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token sy
 
 | Contract       | Address                                      | Transaction                                                                                                |
 | -------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Implementation | `0x976f2D1abeb7517D4e1D6748b48Db90F8aFd927F` | [View](https://sepolia.basescan.org/tx/0x0316f4ebd0a231d928fc880d7e624fed3d5280b9f6c16ac534908358a1e1357f) |
-| Proxy Admin    | `0x49444dec297893751f0475B010ea09DB4132E811` | [View](https://sepolia.basescan.org/tx/0x34901f3ac1817480970a4644b59cdea5bad320d39b5b29173695fd05538c24f9) |
-| Proxy          | `0xbbf57b8b9f2d63caf22430a366eea4b716fa17a3` | [View](https://sepolia.basescan.org/tx/0xe72a0877f910a08e3c6851d5ccb4791cbae4f77e7be148162656a7c5182ad005) |
+| Implementation | `0x019d5E4BcF1804265AFD084777a700B1aEdf47c9` | [View](https://sepolia.basescan.org/tx/0xac8a612f38c4793e560c497389d95bd21d112158fbbd3640454c51d3d7757eb9) |
+| Proxy Admin    | `0x0Eb9984B125D7e8fe10C7F8E64A0594009ae449a` | [View](https://sepolia.basescan.org/tx/0x297b6626141b18bacac6e7ea338372ad881ca071d79cd36b45c18dc92d79c2f3) |
+| Proxy          | `0x2d8CF3A448b75Bbc25cEC322be1224A9f8584115` | [View](https://sepolia.basescan.org/tx/0xb0f75db8cfcf2c490e6d82103f5baa4455e454a43eb45577a627d66813cce656) |
+
+> **Latest Update (2024-04-23)**: The contract implementation has been improved to fix an issue with global state handling in the `mintWithCredits` function. The function now maintains isolation between different calls, ensuring consistent behavior when interacting with multiple collectibles contracts.
 
 ### Key Features
 
