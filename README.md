@@ -9,6 +9,16 @@ The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token sy
 
 ## Official Deployments
 
+### Base Mainnet (Chain ID: 8453)
+
+| Contract       | Address                                      | Transaction                                                                                        |
+| -------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Implementation | `0x06ad14843ae7c386712143c36f378a5064044cd3` | [View](https://basescan.org/tx/0x396f2b7b1c49e49c082c31baf1e6db636ae87904e23337ea01f16271b1fef1ca) |
+| Proxy Admin    | `0x2acb0aa03fbaccd288ae1530687290b5f15c93b0` | [View](https://basescan.org/tx/0x285c31769fb98ed50f043a9d5702ea22192cc0799757dda6ad334f050190f656) |
+| Proxy          | `0xc168b5f0549afbf40052f60b86d1a1a896612646` | [View](https://basescan.org/tx/0x7df8fe8050f0282d1cf0d046480bc2f98a08ba282431ad9735d26ec63306fc0c) |
+
+> **Latest Update (2024-05-28)**: First official deployment of the Credits Protocol to Base mainnet, using the implementation that addresses the global state issue in the `mintWithCredits` function.
+
 ### Base Sepolia (Chain ID: 84532)
 
 | Contract       | Address                                      | Transaction                                                                                                |
