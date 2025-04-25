@@ -17,7 +17,7 @@ The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token sy
 | Proxy Admin    | `0x2acb0aa03fbaccd288ae1530687290b5f15c93b0` | [View](https://basescan.org/tx/0x285c31769fb98ed50f043a9d5702ea22192cc0799757dda6ad334f050190f656) |
 | Proxy          | `0xc168b5f0549afbf40052f60b86d1a1a896612646` | [View](https://basescan.org/tx/0x7df8fe8050f0282d1cf0d046480bc2f98a08ba282431ad9735d26ec63306fc0c) |
 
-> **Latest Update (2024-05-28)**: First official deployment of the Credits Protocol to Base mainnet, using the implementation that addresses the global state issue in the `mintWithCredits` function.
+> **Latest Update (2025-04-25)**: First official deployment of the Credits Protocol to Base mainnet, using the implementation that addresses the global state issue in the `mintWithCredits` function.
 
 ### Base Sepolia (Chain ID: 84532)
 
@@ -27,7 +27,7 @@ The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token sy
 | Proxy Admin    | `0x0Eb9984B125D7e8fe10C7F8E64A0594009ae449a` | [View](https://sepolia.basescan.org/tx/0x297b6626141b18bacac6e7ea338372ad881ca071d79cd36b45c18dc92d79c2f3) |
 | Proxy          | `0x2d8CF3A448b75Bbc25cEC322be1224A9f8584115` | [View](https://sepolia.basescan.org/tx/0xb0f75db8cfcf2c490e6d82103f5baa4455e454a43eb45577a627d66813cce656) |
 
-> **Latest Update (2024-04-23)**: The contract implementation has been improved to fix an issue with global state handling in the `mintWithCredits` function. The function now maintains isolation between different calls, ensuring consistent behavior when interacting with multiple collectibles contracts.
+> **Latest Update (2025-04-23)**: The contract implementation has been improved to fix an issue with global state handling in the `mintWithCredits` function. The function now maintains isolation between different calls, ensuring consistent behavior when interacting with multiple collectibles contracts.
 
 ### Key Features
 
@@ -114,7 +114,9 @@ RPC_URL=           # The RPC URL of the target network (e.g., https://sepolia.ba
 PRIVATE_KEY=       # Your wallet's private key for deployment
 TOKEN_URI=         # The URI for the token metadata (e.g., ipfs://...)
 BASESCAN_API_KEY=  # API key for contract verification
-FIXED_PRICE_SALE_STRATEGY= # (Optional) Address of the fixed price sale strategy contract
+FIXED_PRICE_SALE_STRATEGY= # Address of the fixed price sale strategy contract
+                           # Base Sepolia: 0xd34872BE0cdb6b09d45FCa067B07f04a1A9aE1aE
+                           # Base Mainnet: 0x04E2516A2c207E84a1839755675dfd8eF6302F0a
 ```
 
 2. Run the deployment script:
