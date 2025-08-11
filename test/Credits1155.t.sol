@@ -130,4 +130,29 @@ contract Credits1155Test is Test {
         );
         credits.setDopplerUniversalRouter(dopplerRouter);
     }
+
+    function test_BuyDopplerCoinsWithCredits() public {
+        // Test data setup
+        bytes memory commands = hex"01"; // Example command
+        bytes[] memory inputs = new bytes[](1);
+        inputs[0] = hex"02"; // Example input
+
+        // This test should fail since the method doesn't exist yet
+        // Following TDD red-green-refactor cycle
+        vm.prank(user);
+        vm.expectRevert();
+        credits.buyDopplerCoinsWithCredits(commands, inputs);
+    }
+
+    function test_RevertWhen_BuyDopplerCoinsWithCreditsRouterNotSet() public {
+        // Test data setup
+        bytes memory commands = hex"01"; // Example command
+        bytes[] memory inputs = new bytes[](1);
+        inputs[0] = hex"02"; // Example input
+
+        // Expect the method to revert when router is not set
+        vm.prank(user);
+        vm.expectRevert(abi.encodeWithSelector(Credits1155.Credits1155_Contract_Address_Is_Not_A_Contract.selector));
+        credits.buyDopplerCoinsWithCredits(commands, inputs);
+    }
 }

@@ -307,6 +307,21 @@ contract Credits1155 is
         return super.supportsInterface(interfaceId);
     }
 
+    /**
+     * @notice Execute a token swap using Universal Router
+     * @param commands The commands to execute on the Universal Router
+     * @param inputs The inputs for the commands
+     */
+    function buyDopplerCoinsWithCredits(bytes memory commands, bytes[] memory inputs) external payable {
+        // Validate that the Doppler Universal Router is set
+        if (address(dopplerUniversalRouter) == address(0)) {
+            revert Credits1155_Contract_Address_Is_Not_A_Contract();
+        }
+
+        // Execute the swap using the Universal Router with the ETH sent
+        dopplerUniversalRouter.execute{value: msg.value}(commands, inputs);
+    }
+
     receive() external payable {}
 
     uint256[50] private __gap;
