@@ -133,7 +133,6 @@ contract Credits1155Test is Test {
 
     function test_BuyDopplerCoinsWithCredits() public {
         // Test data setup
-        address tokenAddress = makeAddr("token");
         bytes memory commands = hex"01"; // Example command
         bytes[] memory inputs = new bytes[](1);
         inputs[0] = hex"02"; // Example input
@@ -143,6 +142,6 @@ contract Credits1155Test is Test {
         // Following TDD red-green-refactor cycle
         vm.prank(user);
         vm.expectRevert();
-        credits.buyDopplerCoinsWithCredits(tokenAddress, commands, inputs, ethAmount);
+        credits.buyDopplerCoinsWithCredits(commands, inputs, ethAmount);
     }
 }
