@@ -87,4 +87,15 @@ contract Credits1155Test is Test {
         vm.expectRevert();
         credits.adminSetURI("ipfs://test");
     }
+
+    function test_SetDopplerUniversalRouter() public {
+        // Test data setup
+        address dopplerRouter = makeAddr("dopplerRouter");
+
+        // This test should fail since the method doesn't exist yet
+        // Following TDD red-green-refactor cycle
+        vm.prank(owner);
+        vm.expectRevert();
+        credits.setDopplerUniversalRouter(dopplerRouter);
+    }
 }
