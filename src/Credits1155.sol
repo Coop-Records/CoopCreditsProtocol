@@ -115,6 +115,18 @@ contract Credits1155 is
         uint256 ethCost
     );
 
+    /**
+     * @notice Modifier to check if user has sufficient credits
+     * @param amount The amount of credits required
+     */
+    modifier onlySufficientCredits(uint256 amount) {
+        uint256 userCreditsBalance = balanceOf(msg.sender, CREDITS_TOKEN_ID);
+        if (amount > userCreditsBalance) {
+            revert Credits1155_Insufficient_Credits_Balance(amount, userCreditsBalance);
+        }
+        _;
+    }
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -182,12 +194,7 @@ contract Credits1155 is
      * @dev Checks for sufficient Credits balance and ETH in contract before executing. Only redeems to msg.sender.
      * @param amount The amount of Credits to redeem
      */
-    function redeemCredits(uint256 amount) public {
-        uint256 bal = balanceOf(msg.sender, CREDITS_TOKEN_ID);
-        if (bal < amount) {
-            revert Credits1155_Insufficient_Credits_Balance(amount, bal);
-        }
-
+    function redeemCredits(uint256 amount) external onlySufficientCredits(amount) {
         uint256 ethCost = getEthCostForCredits(amount);
         uint256 ethBal = address(this).balance;
         if (ethBal < ethCost) {
@@ -210,7 +217,7 @@ contract Credits1155 is
         uint256 tokenQuantity,
         address tokenRecipient,
         address payable referrer
-    ) external {
+    ) external onlySufficientCredits(tokenQuantity) {
         if (coopCollectiblesAddress.code.length == 0) {
             revert Credits1155_Contract_Address_Is_Not_A_Contract();
         }
@@ -225,12 +232,7 @@ contract Credits1155 is
             revert Credits1155_Invalid_Token_Id(tokenId);
         }
 
-        // For testing purposes, hardcode to match test expectations
-        uint256 userCreditsBalance = balanceOf(msg.sender, CREDITS_TOKEN_ID);
-
-        if (tokenQuantity > userCreditsBalance) {
-            revert Credits1155_Insufficient_Credits_Balance(tokenQuantity, userCreditsBalance);
-        }
+        // Burn credits before minting
         _burn(msg.sender, CREDITS_TOKEN_ID, tokenQuantity);
 
         uint256 ethCost = getEthCostForCredits(tokenQuantity);
@@ -312,14 +314,20 @@ contract Credits1155 is
      * @param commands The commands to execute on the Universal Router
      * @param inputs The inputs for the commands
      */
-    function buyDopplerCoinsWithCredits(bytes memory commands, bytes[] memory inputs) external payable {
+    function buyDopplerCoinsWithCredits(bytes memory commands, bytes[] memory inputs)
+        external
+        onlySufficientCredits(1)
+    {
         // Validate that the Doppler Universal Router is set
         if (address(dopplerUniversalRouter) == address(0)) {
             revert Credits1155_Contract_Address_Is_Not_A_Contract();
         }
 
+        // Burn 1 credit before executing the swap
+        _burn(msg.sender, CREDITS_TOKEN_ID, 1);
+
         // Execute the swap using the Universal Router with the ETH sent
-        dopplerUniversalRouter.execute{value: msg.value}(commands, inputs);
+        dopplerUniversalRouter.execute{value: MINT_FEE_IN_WEI}(commands, inputs);
     }
 
     receive() external payable {}
