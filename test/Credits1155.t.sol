@@ -108,4 +108,22 @@ contract Credits1155Test is Test {
         vm.expectRevert(abi.encodeWithSelector(Credits1155.Credits1155_Contract_Address_Is_Not_A_Contract.selector));
         credits.setDopplerUniversalRouter(nonContractAddress);
     }
+
+    function test_RevertWhen_NonOwnerSetsDopplerUniversalRouter() public {
+        // Test data setup
+        address dopplerRouter = makeAddr("dopplerRouter");
+        address nonOwner = makeAddr("nonOwner");
+
+        // Expect the method to revert when called by non-owner
+        // This will revert with AccessControl error since the user doesn't have DEFAULT_ADMIN_ROLE
+        vm.prank(nonOwner);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                bytes4(keccak256("AccessControlUnauthorizedAccount(address,bytes32)")),
+                nonOwner,
+                bytes32(0x0000000000000000000000000000000000000000000000000000000000000000) // DEFAULT_ADMIN_ROLE
+            )
+        );
+        credits.setDopplerUniversalRouter(dopplerRouter);
+    }
 }
