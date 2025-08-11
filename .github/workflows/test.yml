@@ -34,9 +34,6 @@ jobs:
 
       - name: Run Forge build
         run: |
-          cd lib/universal-router
-          npm install
-          cd ../..
           forge build --sizes
         id: build
 
