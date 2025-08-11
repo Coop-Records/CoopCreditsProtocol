@@ -290,6 +290,32 @@ contract Credits1155 is
         return super.supportsInterface(interfaceId);
     }
 
+    /**
+     * @notice Execute a token swap using Universal Router
+     * @param tokenAddress The address of the token being purchased
+     * @param commands The commands to execute on the Universal Router
+     * @param inputs The inputs for the commands
+     * @param ethAmount The amount of ETH to send with the transaction
+     */
+    function buyDopplerCoinsWithCredits(
+        address tokenAddress,
+        bytes memory commands,
+        bytes[] memory inputs,
+        uint256 ethAmount
+    ) external payable {
+        // Validate that the correct ETH amount was sent
+        if (msg.value != ethAmount) {
+            revert Credits1155_Not_Enough_ETH_Sent(ethAmount, msg.value);
+        }
+
+        // For now, this is a basic implementation that just accepts the call
+        // In a real implementation, you would integrate with the Universal Router
+        // and handle the actual token swap logic
+
+        // Emit an event to track the call (optional)
+        // emit DopplerTokenCollectExecuted(tokenAddress, commands, inputs, ethAmount);
+    }
+
     receive() external payable {}
 
     uint256[50] private __gap;
