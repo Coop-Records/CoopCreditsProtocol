@@ -71,7 +71,7 @@ contract Credits1155InitializerTest is Test {
 
         // Encode initialization data with the strategy
         bytes memory initData =
-            abi.encodeWithSelector(Credits1155.initialize.selector, "ipfs://test", address(saleStrategy));
+            abi.encodeWithSelector(Credits1155.initialize.selector, "ipfs://test", address(saleStrategy), address(0));
 
         // Deploy and initialize proxy
         TransparentUpgradeableProxy proxy =
@@ -97,7 +97,8 @@ contract Credits1155InitializerTest is Test {
         bytes memory initData = abi.encodeWithSelector(
             Credits1155.initialize.selector,
             "ipfs://test",
-            address(0) // Zero address for strategy
+            address(0), // Zero address for strategy
+            address(0)
         );
 
         // Deploy and initialize proxy
@@ -138,7 +139,7 @@ contract Credits1155InitializerTest is Test {
 
         // Encode initialization data with the strategy
         bytes memory initData =
-            abi.encodeWithSelector(Credits1155.initialize.selector, "ipfs://test", address(saleStrategy));
+            abi.encodeWithSelector(Credits1155.initialize.selector, "ipfs://test", address(saleStrategy), address(0));
 
         // Deploy and initialize proxy
         TransparentUpgradeableProxy proxy =

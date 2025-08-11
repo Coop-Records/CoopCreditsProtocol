@@ -33,7 +33,7 @@ contract Credits1155Test is Test {
 
         // Encode initialization data
         bytes memory initData =
-            abi.encodeWithSelector(Credits1155.initialize.selector, "ipfs://test", payable(dummyMarket));
+            abi.encodeWithSelector(Credits1155.initialize.selector, "ipfs://test", payable(dummyMarket), address(0));
 
         // Deploy and initialize proxy
         TransparentUpgradeableProxy proxy =

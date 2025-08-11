@@ -120,7 +120,10 @@ contract Credits1155 is
         _disableInitializers();
     }
 
-    function initialize(string memory tokenUri, address _fixedPriceSaleStrategy) public initializer {
+    function initialize(string memory tokenUri, address _fixedPriceSaleStrategy, address _dopplerUniversalRouter)
+        public
+        initializer
+    {
         __ERC1155_init(tokenUri); // creates first token
         __Ownable_init(msg.sender);
         __AccessControl_init();
@@ -129,6 +132,11 @@ contract Credits1155 is
         // Set the fixed price sale strategy if provided
         if (_fixedPriceSaleStrategy != address(0)) {
             setFixedPriceSaleStrategy(_fixedPriceSaleStrategy);
+        }
+
+        // Set the Doppler Universal Router if provided
+        if (_dopplerUniversalRouter != address(0)) {
+            setDopplerUniversalRouter(_dopplerUniversalRouter);
         }
     }
 
