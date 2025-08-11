@@ -98,4 +98,14 @@ contract Credits1155Test is Test {
         vm.expectRevert();
         credits.setDopplerUniversalRouter(dopplerRouter);
     }
+
+    function test_RevertWhen_SetDopplerUniversalRouterWithNonContractAddress() public {
+        // Test data setup - use a regular address (not a contract)
+        address nonContractAddress = makeAddr("nonContract");
+
+        // Expect the specific error to be thrown
+        vm.prank(owner);
+        vm.expectRevert(abi.encodeWithSelector(Credits1155.Credits1155_Contract_Address_Is_Not_A_Contract.selector));
+        credits.setDopplerUniversalRouter(nonContractAddress);
+    }
 }
