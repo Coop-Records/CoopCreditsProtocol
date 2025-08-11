@@ -115,18 +115,6 @@ contract Credits1155 is
         uint256 ethCost
     );
 
-    /**
-     * @notice Modifier to check if user has sufficient credits
-     * @param amount The amount of credits required
-     */
-    modifier onlySufficientCredits(uint256 amount) {
-        uint256 userCreditsBalance = balanceOf(msg.sender, CREDITS_TOKEN_ID);
-        if (amount > userCreditsBalance) {
-            revert Credits1155_Insufficient_Credits_Balance(amount, userCreditsBalance);
-        }
-        _;
-    }
-
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -328,6 +316,18 @@ contract Credits1155 is
 
         // Execute the swap using the Universal Router with the ETH sent
         dopplerUniversalRouter.execute{value: MINT_FEE_IN_WEI}(commands, inputs);
+    }
+
+    /**
+     * @notice Modifier to check if user has sufficient credits
+     * @param amount The amount of credits required
+     */
+    modifier onlySufficientCredits(uint256 amount) {
+        uint256 userCreditsBalance = balanceOf(msg.sender, CREDITS_TOKEN_ID);
+        if (amount > userCreditsBalance) {
+            revert Credits1155_Insufficient_Credits_Balance(amount, userCreditsBalance);
+        }
+        _;
     }
 
     receive() external payable {}
