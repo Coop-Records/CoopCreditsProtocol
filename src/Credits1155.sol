@@ -12,6 +12,7 @@ import {ERC1155SupplyUpgradeable} from
     "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {Ownable2StepUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
+import {IUniversalRouter} from "./interfaces/IUniversalRouter.sol";
 // solhint-enable max-line-length
 
 import {ICoopCreator1155} from "./interfaces/ICoopCreator1155.sol";
@@ -40,6 +41,11 @@ contract Credits1155 is
      * @notice Fixed price sale strategy contract
      */
     IMinter1155 public fixedPriceSaleStrategy;
+
+    /**
+     * @notice Doppler Universal Router contract
+     */
+    IUniversalRouter public dopplerUniversalRouter;
 
     /**
      * @notice Not a contract
@@ -135,6 +141,17 @@ contract Credits1155 is
             revert Credits1155_Contract_Address_Is_Not_A_Contract();
         }
         fixedPriceSaleStrategy = IMinter1155(_fixedPriceSaleStrategy);
+    }
+
+    /**
+     * @notice Set the Doppler Universal Router contract
+     * @param _dopplerUniversalRouter The address of the Doppler Universal Router
+     */
+    function setDopplerUniversalRouter(address _dopplerUniversalRouter) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (address(_dopplerUniversalRouter).code.length == 0) {
+            revert Credits1155_Contract_Address_Is_Not_A_Contract();
+        }
+        dopplerUniversalRouter = IUniversalRouter(payable(_dopplerUniversalRouter));
     }
 
     /**
@@ -303,17 +320,18 @@ contract Credits1155 is
         bytes[] memory inputs,
         uint256 ethAmount
     ) external payable {
+        // Validate that the Doppler Universal Router is set
+        if (address(dopplerUniversalRouter) == address(0)) {
+            revert Credits1155_Contract_Address_Is_Not_A_Contract();
+        }
+
         // Validate that the correct ETH amount was sent
         if (msg.value != ethAmount) {
             revert Credits1155_Not_Enough_ETH_Sent(ethAmount, msg.value);
         }
 
-        // For now, this is a basic implementation that just accepts the call
-        // In a real implementation, you would integrate with the Universal Router
-        // and handle the actual token swap logic
-
-        // Emit an event to track the call (optional)
-        // emit DopplerTokenCollectExecuted(tokenAddress, commands, inputs, ethAmount);
+        // Execute the swap using the Universal Router
+        dopplerUniversalRouter.execute{value: ethAmount}(commands, inputs);
     }
 
     receive() external payable {}
