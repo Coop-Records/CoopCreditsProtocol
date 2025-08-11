@@ -12,7 +12,7 @@ import {ERC1155SupplyUpgradeable} from
     "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {Ownable2StepUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
-import {UniversalRouter} from "universal-router/contracts/UniversalRouter.sol";
+import {IUniversalRouter} from "./interfaces/IUniversalRouter.sol";
 // solhint-enable max-line-length
 
 import {ICoopCreator1155} from "./interfaces/ICoopCreator1155.sol";
@@ -45,7 +45,7 @@ contract Credits1155 is
     /**
      * @notice Doppler Universal Router contract
      */
-    UniversalRouter public dopplerUniversalRouter;
+    IUniversalRouter public dopplerUniversalRouter;
 
     /**
      * @notice Not a contract
@@ -151,7 +151,7 @@ contract Credits1155 is
         if (address(_dopplerUniversalRouter).code.length == 0) {
             revert Credits1155_Contract_Address_Is_Not_A_Contract();
         }
-        dopplerUniversalRouter = UniversalRouter(payable(_dopplerUniversalRouter));
+        dopplerUniversalRouter = IUniversalRouter(payable(_dopplerUniversalRouter));
     }
 
     /**
