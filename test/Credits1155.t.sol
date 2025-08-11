@@ -92,11 +92,15 @@ contract Credits1155Test is Test {
         // Test data setup
         address dopplerRouter = makeAddr("dopplerRouter");
 
-        // This test should fail since the method doesn't exist yet
-        // Following TDD red-green-refactor cycle
+        // Add code to the dopplerRouter to make it a contract
+        vm.etch(dopplerRouter, hex"00");
+
+        // Call the method as owner - should succeed
         vm.prank(owner);
-        vm.expectRevert();
         credits.setDopplerUniversalRouter(dopplerRouter);
+
+        // Verify the router was set correctly
+        assertEq(address(credits.dopplerUniversalRouter()), dopplerRouter);
     }
 
     function test_RevertWhen_SetDopplerUniversalRouterWithNonContractAddress() public {
