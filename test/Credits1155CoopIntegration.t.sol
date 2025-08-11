@@ -56,7 +56,8 @@ contract Credits1155CoopIntegrationTest is Test {
         bytes memory initData = abi.encodeWithSelector(
             Credits1155.initialize.selector,
             "ipfs://test",
-            payable(address(coopCollectibles)) // Using coopCollectibles address
+            payable(address(coopCollectibles)), // Using coopCollectibles address
+            address(0)
         );
 
         // Deploy and initialize proxy
