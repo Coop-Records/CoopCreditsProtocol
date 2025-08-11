@@ -132,19 +132,47 @@ contract Credits1155Test is Test {
     }
 
     function test_BuyDopplerCoinsWithCredits() public {
+        // First buy some credits for the user
+        uint256 creditsAmount = 10;
+        uint256 creditsCost = credits.getEthCostForCredits(creditsAmount);
+        vm.prank(user);
+        credits.buyCredits{value: creditsCost}(user, creditsAmount);
+
+        // Verify initial credits balance
+        uint256 initialCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
+        assertEq(initialCreditsBalance, creditsAmount);
+
+        // Set up the Doppler Universal Router
+        address dopplerRouter = makeAddr("dopplerRouter");
+        vm.etch(dopplerRouter, hex"00");
+        vm.prank(owner);
+        credits.setDopplerUniversalRouter(dopplerRouter);
+
         // Test data setup
         bytes memory commands = hex"01"; // Example command
         bytes[] memory inputs = new bytes[](1);
         inputs[0] = hex"02"; // Example input
 
-        // This test should fail since the method doesn't exist yet
-        // Following TDD red-green-refactor cycle
+        // Call buyDopplerCoinsWithCredits - should succeed and consume 1 credit
         vm.prank(user);
-        vm.expectRevert();
         credits.buyDopplerCoinsWithCredits(commands, inputs);
+
+        // Verify credits balance decreased by 1
+        uint256 finalCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
+        assertEq(finalCreditsBalance, initialCreditsBalance - 1);
     }
 
     function test_RevertWhen_BuyDopplerCoinsWithCreditsRouterNotSet() public {
+        // First buy some credits for the user
+        uint256 creditsAmount = 10;
+        uint256 creditsCost = credits.getEthCostForCredits(creditsAmount);
+        vm.prank(user);
+        credits.buyCredits{value: creditsCost}(user, creditsAmount);
+
+        // Verify initial credits balance
+        uint256 initialCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
+        assertEq(initialCreditsBalance, creditsAmount);
+
         // Test data setup
         bytes memory commands = hex"01"; // Example command
         bytes[] memory inputs = new bytes[](1);
@@ -154,5 +182,41 @@ contract Credits1155Test is Test {
         vm.prank(user);
         vm.expectRevert(abi.encodeWithSelector(Credits1155.Credits1155_Contract_Address_Is_Not_A_Contract.selector));
         credits.buyDopplerCoinsWithCredits(commands, inputs);
+
+        // Verify credits balance remains unchanged after revert
+        uint256 finalCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
+        assertEq(finalCreditsBalance, initialCreditsBalance);
+    }
+
+    function test_RevertWhen_BuyDopplerCoinsWithCreditsNoCredits() public {
+        // Set up the Doppler Universal Router first
+        address dopplerRouter = makeAddr("dopplerRouter");
+        vm.etch(dopplerRouter, hex"00");
+        vm.prank(owner);
+        credits.setDopplerUniversalRouter(dopplerRouter);
+
+        // Verify user has no credits initially
+        uint256 initialCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
+        assertEq(initialCreditsBalance, 0);
+
+        // Test data setup
+        bytes memory commands = hex"01"; // Example command
+        bytes[] memory inputs = new bytes[](1);
+        inputs[0] = hex"02"; // Example input
+
+        // Expect the method to revert when user has no credits
+        vm.prank(user);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Credits1155.Credits1155_Insufficient_Credits_Balance.selector,
+                1, // required amount
+                0 // available amount
+            )
+        );
+        credits.buyDopplerCoinsWithCredits(commands, inputs);
+
+        // Verify credits balance remains at 0
+        uint256 finalCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
+        assertEq(finalCreditsBalance, 0);
     }
 }
