@@ -23,10 +23,12 @@ contract DeployCredits is Script {
     function run() public returns (DeploymentResult memory) {
         string memory tokenUri = vm.envString("TOKEN_URI");
         address fixedPriceSaleStrategy = vm.envOr("FIXED_PRICE_SALE_STRATEGY", address(0));
+        address dopplerUniversalRouter = vm.envOr("DOPPLER_UNIVERSAL_ROUTER", address(0));
 
         console.log("Deploying Credits1155 to chain:", block.chainid);
         console.log("Using token URI:", tokenUri);
         console.log("Using fixed price sale strategy:", fixedPriceSaleStrategy);
+        console.log("Using doppler universal router:", dopplerUniversalRouter);
 
         // Start broadcasting
         vm.startBroadcast();
@@ -40,8 +42,9 @@ contract DeployCredits is Script {
         console.log("ProxyAdmin deployed at:", address(proxyAdmin));
 
         // 3. Prepare initialization data
-        bytes memory initData =
-            abi.encodeWithSelector(Credits1155.initialize.selector, tokenUri, fixedPriceSaleStrategy);
+        bytes memory initData = abi.encodeWithSelector(
+            Credits1155.initialize.selector, tokenUri, fixedPriceSaleStrategy, dopplerUniversalRouter
+        );
 
         // 4. Deploy and initialize proxy
         TransparentUpgradeableProxy proxy =
