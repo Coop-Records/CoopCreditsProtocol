@@ -311,24 +311,15 @@ contract Credits1155 is
      * @notice Execute a token swap using Universal Router
      * @param commands The commands to execute on the Universal Router
      * @param inputs The inputs for the commands
-     * @param ethAmount The amount of ETH to send with the transaction
      */
-    function buyDopplerCoinsWithCredits(bytes memory commands, bytes[] memory inputs, uint256 ethAmount)
-        external
-        payable
-    {
+    function buyDopplerCoinsWithCredits(bytes memory commands, bytes[] memory inputs) external payable {
         // Validate that the Doppler Universal Router is set
         if (address(dopplerUniversalRouter) == address(0)) {
             revert Credits1155_Contract_Address_Is_Not_A_Contract();
         }
 
-        // Validate that the correct ETH amount was sent
-        if (msg.value != ethAmount) {
-            revert Credits1155_Not_Enough_ETH_Sent(ethAmount, msg.value);
-        }
-
-        // Execute the swap using the Universal Router
-        dopplerUniversalRouter.execute{value: ethAmount}(commands, inputs);
+        // Execute the swap using the Universal Router with the ETH sent
+        dopplerUniversalRouter.execute{value: msg.value}(commands, inputs);
     }
 
     receive() external payable {}
