@@ -144,4 +144,39 @@ contract Credits1155Test is Test {
         vm.expectRevert();
         credits.buyDopplerCoinsWithCredits(commands, inputs, ethAmount);
     }
+
+    function test_RevertWhen_BuyDopplerCoinsWithCreditsRouterNotSet() public {
+        // Test data setup
+        bytes memory commands = hex"01"; // Example command
+        bytes[] memory inputs = new bytes[](1);
+        inputs[0] = hex"02"; // Example input
+        uint256 ethAmount = 0.1 ether;
+
+        // Expect the method to revert when router is not set
+        vm.prank(user);
+        vm.expectRevert(abi.encodeWithSelector(Credits1155.Credits1155_Contract_Address_Is_Not_A_Contract.selector));
+        credits.buyDopplerCoinsWithCredits(commands, inputs, ethAmount);
+    }
+
+    function test_RevertWhen_BuyDopplerCoinsWithCreditsIncorrectEthAmount() public {
+        // First set up the router
+        address dopplerRouter = makeAddr("dopplerRouter");
+        vm.etch(dopplerRouter, hex"00");
+        vm.prank(owner);
+        credits.setDopplerUniversalRouter(dopplerRouter);
+
+        // Test data setup
+        bytes memory commands = hex"01"; // Example command
+        bytes[] memory inputs = new bytes[](1);
+        inputs[0] = hex"02"; // Example input
+        uint256 ethAmount = 0.1 ether;
+        uint256 incorrectEthAmount = 0.05 ether; // Send less than required
+
+        // Expect the method to revert when incorrect ETH amount is sent
+        vm.prank(user);
+        vm.expectRevert(
+            abi.encodeWithSelector(Credits1155.Credits1155_Not_Enough_ETH_Sent.selector, ethAmount, incorrectEthAmount)
+        );
+        credits.buyDopplerCoinsWithCredits{value: incorrectEthAmount}(commands, inputs, ethAmount);
+    }
 }
