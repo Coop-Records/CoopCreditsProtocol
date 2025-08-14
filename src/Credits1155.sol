@@ -13,6 +13,7 @@ import {ERC1155SupplyUpgradeable} from
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {Ownable2StepUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
 import {IUniversalRouter} from "./interfaces/IUniversalRouter.sol";
+import {ICoop} from "./interfaces/ICoop.sol";
 // solhint-enable max-line-length
 
 import {ICoopCreator1155} from "./interfaces/ICoopCreator1155.sol";
@@ -324,6 +325,41 @@ contract Credits1155 is
 
         // Execute the swap using the Universal Router with the ETH sent
         dopplerUniversalRouter.execute{value: MINT_FEE_IN_WEI}(commands, inputs);
+    }
+
+    /**
+     * @notice Buy COOP coins using credits instead of ETH
+     * @param coinAddress The address of the COOP WOW Token contract to buy from
+     * @param recipient The address to receive the bought tokens
+     * @param refundRecipient The address to receive any refunds
+     * @param orderReferrer The address of the order referrer
+     * @param comment A comment for the order
+     * @param expectedMarketType The expected market type (0 for curve, 1 for other)
+     * @param minOrderSize The minimum number of tokens to receive
+     * @param sqrtPriceLimitX96 The price limit for the swap
+     */
+    function buyCoopCoinsWithCredits(
+        address coinAddress,
+        address recipient,
+        address refundRecipient,
+        address orderReferrer,
+        string memory comment,
+        ICoop.MarketType expectedMarketType,
+        uint256 minOrderSize,
+        uint160 sqrtPriceLimitX96
+    ) external onlySufficientCredits(1) {
+        // Validate that the coin address is a contract
+        if (coinAddress.code.length == 0) {
+            revert Credits1155_Contract_Address_Is_Not_A_Contract();
+        }
+
+        // Burn 1 credit before executing the buy
+        _burn(msg.sender, CREDITS_TOKEN_ID, 1);
+
+        // Call the COOP WOW Token contract's buy function
+        ICoop(coinAddress).buy{value: MINT_FEE_IN_WEI}(
+            recipient, refundRecipient, orderReferrer, comment, expectedMarketType, minOrderSize, sqrtPriceLimitX96
+        );
     }
 
     /**
