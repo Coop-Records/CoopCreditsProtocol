@@ -145,10 +145,11 @@ contract Credits1155 is
      * @notice Set the fixed price sale strategy for CoopCollectibles
      * @param _fixedPriceSaleStrategy The address of the fixed price sale strategy
      */
-    function setFixedPriceSaleStrategy(address _fixedPriceSaleStrategy) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (_fixedPriceSaleStrategy.code.length == 0) {
-            revert Credits1155_Contract_Address_Is_Not_A_Contract();
-        }
+    function setFixedPriceSaleStrategy(address _fixedPriceSaleStrategy)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        onlyContracts(_fixedPriceSaleStrategy)
+    {
         fixedPriceSaleStrategy = IMinter1155(_fixedPriceSaleStrategy);
     }
 
@@ -156,10 +157,11 @@ contract Credits1155 is
      * @notice Set the Doppler Universal Router contract
      * @param _dopplerUniversalRouter The address of the Doppler Universal Router
      */
-    function setDopplerUniversalRouter(address _dopplerUniversalRouter) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (address(_dopplerUniversalRouter).code.length == 0) {
-            revert Credits1155_Contract_Address_Is_Not_A_Contract();
-        }
+    function setDopplerUniversalRouter(address _dopplerUniversalRouter)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        onlyContracts(_dopplerUniversalRouter)
+    {
         dopplerUniversalRouter = IUniversalRouter(payable(_dopplerUniversalRouter));
     }
 
@@ -214,10 +216,7 @@ contract Credits1155 is
         uint256 tokenQuantity,
         address tokenRecipient,
         address payable referrer
-    ) external onlySufficientCredits(tokenQuantity) {
-        if (coopCollectiblesAddress.code.length == 0) {
-            revert Credits1155_Contract_Address_Is_Not_A_Contract();
-        }
+    ) external onlySufficientCredits(tokenQuantity) onlyContracts(coopCollectiblesAddress) {
         ICoopCreator1155 coopCollectibles = ICoopCreator1155(coopCollectiblesAddress);
         if (tokenQuantity < 1) {
             revert Credits1155_Must_Buy_At_Least_One_Token();
@@ -314,12 +313,8 @@ contract Credits1155 is
     function buyDopplerCoinsWithCredits(bytes memory commands, bytes[] memory inputs)
         external
         onlySufficientCredits(1)
+        onlyContracts(address(dopplerUniversalRouter))
     {
-        // Validate that the Doppler Universal Router is set
-        if (address(dopplerUniversalRouter) == address(0)) {
-            revert Credits1155_Contract_Address_Is_Not_A_Contract();
-        }
-
         // Burn 1 credit before executing the swap
         _burn(msg.sender, CREDITS_TOKEN_ID, 1);
 
@@ -347,12 +342,7 @@ contract Credits1155 is
         ICoop.MarketType expectedMarketType,
         uint256 minOrderSize,
         uint160 sqrtPriceLimitX96
-    ) external onlySufficientCredits(1) {
-        // Validate that the coin address is a contract
-        if (coinAddress.code.length == 0) {
-            revert Credits1155_Contract_Address_Is_Not_A_Contract();
-        }
-
+    ) external onlySufficientCredits(1) onlyContracts(coinAddress) {
         // Burn 1 credit before executing the buy
         _burn(msg.sender, CREDITS_TOKEN_ID, 1);
 
@@ -370,6 +360,17 @@ contract Credits1155 is
         uint256 userCreditsBalance = balanceOf(msg.sender, CREDITS_TOKEN_ID);
         if (amount > userCreditsBalance) {
             revert Credits1155_Insufficient_Credits_Balance(amount, userCreditsBalance);
+        }
+        _;
+    }
+
+    /**
+     * @notice Modifier to check if an address is a contract
+     * @param target The address to check
+     */
+    modifier onlyContracts(address target) {
+        if (target.code.length == 0) {
+            revert Credits1155_Contract_Address_Is_Not_A_Contract();
         }
         _;
     }
