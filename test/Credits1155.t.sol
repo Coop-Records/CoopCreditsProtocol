@@ -294,4 +294,46 @@ contract Credits1155Test is Test {
         uint256 finalCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
         assertEq(finalCreditsBalance, 0);
     }
+
+    function test_RevertWhen_BuyCoopCoinsWithCreditsNonContractAddress() public {
+        // First buy some credits for the user
+        uint256 creditsAmount = 10;
+        uint256 creditsCost = credits.getEthCostForCredits(creditsAmount);
+        vm.prank(user);
+        credits.buyCredits{value: creditsCost}(user, creditsAmount);
+
+        // Verify initial credits balance
+        uint256 initialCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
+        assertEq(initialCreditsBalance, creditsAmount);
+
+        // Use a regular address (not a contract) for coinAddress
+        address nonContractAddress = makeAddr("nonContract");
+
+        // Test data setup
+        address recipient = makeAddr("recipient");
+        address refundRecipient = makeAddr("refundRecipient");
+        address orderReferrer = makeAddr("orderReferrer");
+        string memory comment = "Test comment";
+        ICoop.MarketType marketType = ICoop.MarketType.BONDING_CURVE;
+        uint256 minOutput = 1000;
+        uint160 sqrtPriceLimitX96 = 0;
+
+        // Expect the method to revert due to onlyContracts modifier
+        vm.prank(user);
+        vm.expectRevert(abi.encodeWithSelector(Credits1155.Credits1155_Contract_Address_Is_Not_A_Contract.selector));
+        credits.buyCoopCoinsWithCredits(
+            nonContractAddress,
+            recipient,
+            refundRecipient,
+            orderReferrer,
+            comment,
+            marketType,
+            minOutput,
+            sqrtPriceLimitX96
+        );
+
+        // Verify credits balance remains unchanged after revert
+        uint256 finalCreditsBalance = credits.balanceOf(user, credits.CREDITS_TOKEN_ID());
+        assertEq(finalCreditsBalance, initialCreditsBalance);
+    }
 }
