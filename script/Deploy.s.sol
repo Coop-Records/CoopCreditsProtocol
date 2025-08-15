@@ -12,13 +12,11 @@ contract DeployCredits is Script {
     struct DeploymentResult {
         address implementation;
         address proxy;
-        address proxyAdmin;
     }
 
     // Contract instances
     Credits1155 public implementation;
     Credits1155 public credits;
-    ProxyAdmin public proxyAdmin;
 
     function run() public returns (DeploymentResult memory) {
         string memory tokenUri = vm.envString("TOKEN_URI");
@@ -49,11 +47,8 @@ contract DeployCredits is Script {
 
         vm.stopBroadcast();
 
-        DeploymentResult memory result = DeploymentResult({
-            implementation: address(implementation),
-            proxy: address(proxy),
-            proxyAdmin: address(proxyAdmin)
-        });
+        DeploymentResult memory result =
+            DeploymentResult({implementation: address(implementation), proxy: address(proxy)});
 
         return result;
     }
