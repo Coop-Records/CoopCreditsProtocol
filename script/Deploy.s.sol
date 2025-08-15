@@ -12,13 +12,11 @@ contract DeployCredits is Script {
     struct DeploymentResult {
         address implementation;
         address proxy;
-        address proxyAdmin;
     }
 
     // Contract instances
     Credits1155 public implementation;
     Credits1155 public credits;
-    ProxyAdmin public proxyAdmin;
 
     function run() public returns (DeploymentResult memory) {
         string memory tokenUri = vm.envString("TOKEN_URI");
@@ -35,29 +33,22 @@ contract DeployCredits is Script {
         implementation = new Credits1155();
         console.log("Implementation deployed at:", address(implementation));
 
-        // 2. Deploy ProxyAdmin
-        proxyAdmin = new ProxyAdmin(msg.sender);
-        console.log("ProxyAdmin deployed at:", address(proxyAdmin));
-
-        // 3. Prepare initialization data
+        // 2. Prepare initialization data
         bytes memory initData =
             abi.encodeWithSelector(Credits1155.initialize.selector, tokenUri, fixedPriceSaleStrategy);
 
-        // 4. Deploy and initialize proxy
+        // 3. Deploy and initialize proxy
         TransparentUpgradeableProxy proxy =
-            new TransparentUpgradeableProxy(address(implementation), address(proxyAdmin), initData);
+            new TransparentUpgradeableProxy(address(implementation), msg.sender, initData);
         console.log("Proxy deployed at:", address(proxy));
 
-        // 5. Setup proxy interface
+        // 4. Setup proxy interface
         credits = Credits1155(payable(address(proxy)));
 
         vm.stopBroadcast();
 
-        DeploymentResult memory result = DeploymentResult({
-            implementation: address(implementation),
-            proxy: address(proxy),
-            proxyAdmin: address(proxyAdmin)
-        });
+        DeploymentResult memory result =
+            DeploymentResult({implementation: address(implementation), proxy: address(proxy)});
 
         return result;
     }
