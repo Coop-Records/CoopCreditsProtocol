@@ -67,7 +67,7 @@ contract Credits1155IsolationTest is Test {
 
         // Initialize and deploy the proxy with our implementation
         bytes memory initData =
-            abi.encodeWithSelector(Credits1155.initialize.selector, "ipfs://test", address(saleStrategy));
+            abi.encodeWithSelector(Credits1155.initialize.selector, "ipfs://test", address(saleStrategy), address(0));
 
         TransparentUpgradeableProxy proxy =
             new TransparentUpgradeableProxy(address(implementation), address(proxyAdmin), initData);
