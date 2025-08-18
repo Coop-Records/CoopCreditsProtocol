@@ -23,7 +23,7 @@ The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token sy
 
 | Contract       | Address                                      | Transaction                                                                                                |
 | -------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Implementation | `0x29c6F2022b97bf8503A64025Dd4fafEa5251756C` | [View](https://sepolia.basescan.org/tx/0x396b891ad4ba8a3095f6e278a47dd5ed97d8aa277f676fe9bc27dd71a0182ef7) |
+| Implementation | `0xf079fF3347FfAEF71AD06953C229F9D5810fca28` | [View](https://sepolia.basescan.org/tx/0x9856a53ad430c54bbc703a875c96cd01f7961d1a8eefcc0d5e9a69cc7a4fd21c) |
 | Proxy Admin    | `0x57c2cd477300e7ec80974b28fa55e34589627cb5` | [View](https://sepolia.basescan.org/tx/0x0af45e99179008d5efe33378867b2daa76cc2345b4e0d9011d12b305b165b3f2) |
 | Proxy          | `0xB3dd782FCe60BCFBBEF1eaD56eF3a24a9c330A38` | [View](https://sepolia.basescan.org/tx/0x0af45e99179008d5efe33378867b2daa76cc2345b4e0d9011d12b305b165b3f2) |
 
