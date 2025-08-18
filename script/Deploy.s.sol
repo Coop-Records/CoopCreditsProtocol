@@ -36,8 +36,9 @@ contract DeployCredits is Script {
         console.log("Implementation deployed at:", address(implementation));
 
         // 2. Prepare initialization data
-        bytes memory initData =
-            abi.encodeWithSelector(Credits1155.initialize.selector, tokenUri, fixedPriceSaleStrategy);
+        bytes memory initData = abi.encodeWithSelector(
+            Credits1155.initialize.selector, tokenUri, fixedPriceSaleStrategy, dopplerUniversalRouter
+        );
 
         // 3. Deploy and initialize proxy
         TransparentUpgradeableProxy proxy =
