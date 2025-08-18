@@ -23,11 +23,11 @@ The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token sy
 
 | Contract       | Address                                      | Transaction                                                                                                |
 | -------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Implementation | `0x019d5E4BcF1804265AFD084777a700B1aEdf47c9` | [View](https://sepolia.basescan.org/tx/0xac8a612f38c4793e560c497389d95bd21d112158fbbd3640454c51d3d7757eb9) |
-| Proxy Admin    | `0x0Eb9984B125D7e8fe10C7F8E64A0594009ae449a` | [View](https://sepolia.basescan.org/tx/0x297b6626141b18bacac6e7ea338372ad881ca071d79cd36b45c18dc92d79c2f3) |
-| Proxy          | `0x2d8CF3A448b75Bbc25cEC322be1224A9f8584115` | [View](https://sepolia.basescan.org/tx/0xb0f75db8cfcf2c490e6d82103f5baa4455e454a43eb45577a627d66813cce656) |
+| Implementation | `0x29c6F2022b97bf8503A64025Dd4fafEa5251756C` | [View](https://sepolia.basescan.org/tx/0x396b891ad4ba8a3095f6e278a47dd5ed97d8aa277f676fe9bc27dd71a0182ef7) |
+| Proxy Admin    | `0x57c2cd477300e7ec80974b28fa55e34589627cb5` | [View](https://sepolia.basescan.org/tx/0x0af45e99179008d5efe33378867b2daa76cc2345b4e0d9011d12b305b165b3f2) |
+| Proxy          | `0xB3dd782FCe60BCFBBEF1eaD56eF3a24a9c330A38` | [View](https://sepolia.basescan.org/tx/0x0af45e99179008d5efe33378867b2daa76cc2345b4e0d9011d12b305b165b3f2) |
 
-> **Latest Update (2025-04-23)**: The contract implementation has been improved to fix an issue with global state handling in the `mintWithCredits` function. The function now maintains isolation between different calls, ensuring consistent behavior when interacting with multiple collectibles contracts.
+> **Latest Update (Aug-18-2025)**: The contract implementation has been improved to add methods for purchasing coins with credits. It also fixes a bug in our Proxy upgrades allowing the Proxy to be upgraded via the `upgradeAndCall` method on the `ProxyAdmin` contract.
 
 ### Key Features
 
