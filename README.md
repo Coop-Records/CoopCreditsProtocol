@@ -108,17 +108,6 @@ To deploy the Credits Protocol to a network, you'll need to:
 
 1. Configure your deployment environment in `.env` file:
 
-```bash
-# Required environment variables
-RPC_URL=           # The RPC URL of the target network (e.g., https://sepolia.base.org)
-PRIVATE_KEY=       # Your wallet's private key for deployment
-TOKEN_URI=         # The URI for the token metadata (e.g., ipfs://...)
-BASESCAN_API_KEY=  # API key for contract verification
-FIXED_PRICE_SALE_STRATEGY= # Address of the fixed price sale strategy contract
-                           # Base Sepolia: 0xd34872BE0cdb6b09d45FCa067B07f04a1A9aE1aE
-                           # Base Mainnet: 0x04E2516A2c207E84a1839755675dfd8eF6302F0a
-```
-
 2. Run the deployment script:
 
 ```bash
@@ -164,22 +153,32 @@ forge test --match-test test_BuyCredits
 
 Since the protocol uses the transparent proxy pattern, the implementation contract can be upgraded while preserving all state:
 
-1. Deploy a new implementation contract:
+### Using the Upgrade Script (Recommended)
+
+The easiest way to upgrade the contract is using the provided upgrade script:
+
+1. Configure your upgrade environment in `.env` file:
 
 ```bash
-forge create src/Credits1155.sol:Credits1155 --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+# Required for upgrades
+CREDITS_PROXY_ADDRESS=<EXISTING_PROXY_ADDRESS>
+CREDITS_PROXY_ADMIN=<EXISTING_PROXY_ADMIN_ADDRESS>
+
+# Optional: Set doppler universal router for the new implementation
+DOPPLER_UNIVERSAL_ROUTER=<DOPPLER_ROUTER_ADDRESS>
 ```
 
-2. Upgrade the proxy to point to the new implementation using the ProxyAdmin:
+2. Run the upgrade script:
 
 ```bash
-# Get the ProxyAdmin contract interface
-cast call <PROXY_ADMIN_ADDRESS> "getProxyAdmin(address)" <PROXY_ADDRESS> --rpc-url $RPC_URL
+# Using pnpm
+pnpm run upgrade-credits
 
-# Upgrade the proxy to the new implementation
-cast send <PROXY_ADMIN_ADDRESS> "upgrade(address,address)" <PROXY_ADDRESS> <NEW_IMPLEMENTATION_ADDRESS> --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+# Or directly with Foundry
+forge clean && forge script script/Upgrade.s.sol:UpgradeCredits --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --etherscan-api-key $BASESCAN_API_KEY -vvvv
 ```
 
-## License
+The upgrade script will:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- Deploy a new `Credits1155` implementation contract
+- Use the ProxyAdmin's `upgradeAndCall` method to upgrade the proxy
