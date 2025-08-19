@@ -13,11 +13,11 @@ The COOP Credits Protocol implements a flexible and upgradeable ERC1155 token sy
 
 | Contract       | Address                                      | Transaction                                                                                        |
 | -------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Implementation | `0x06ad14843ae7c386712143c36f378a5064044cd3` | [View](https://basescan.org/tx/0x396f2b7b1c49e49c082c31baf1e6db636ae87904e23337ea01f16271b1fef1ca) |
-| Proxy Admin    | `0x2acb0aa03fbaccd288ae1530687290b5f15c93b0` | [View](https://basescan.org/tx/0x285c31769fb98ed50f043a9d5702ea22192cc0799757dda6ad334f050190f656) |
-| Proxy          | `0xc168b5f0549afbf40052f60b86d1a1a896612646` | [View](https://basescan.org/tx/0x7df8fe8050f0282d1cf0d046480bc2f98a08ba282431ad9735d26ec63306fc0c) |
+| Implementation | `0xeaa7e0a7b85ec3e78c87a622d8bf4f61c00de1dc` | [View](https://basescan.org/tx/0xdeba52a229318beaffc82d36d37641fb200af2b21df0e71f29676955d391ce35) |
+| Proxy Admin    | `0xd641932fd14fef39af7458b29c968182ae3ce768` | [View](https://basescan.org/tx/0x0b976e2d3e2e07b15021760a19fef65e34b124b362075c0f238d10a7318282b4) |
+| Proxy          | `0x867dd6ac7a8c0bd56f3fa028397b7693c41e14e1` | [View](https://basescan.org/tx/0x0b976e2d3e2e07b15021760a19fef65e34b124b362075c0f238d10a7318282b4) |
 
-> **Latest Update (2025-04-25)**: First official deployment of the Credits Protocol to Base mainnet, using the implementation that addresses the global state issue in the `mintWithCredits` function.
+> **Latest Update (Aug-18-2025)**: The contract implementation has been improved to add methods for purchasing coins with credits. It also fixes a bug in our Proxy upgrades allowing the Proxy to be upgraded via the `upgradeAndCall` method on the `ProxyAdmin` contract.
 
 ### Base Sepolia (Chain ID: 84532)
 
